@@ -33,12 +33,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await authApi.verifyToken();
         await refreshUser();
       } catch {
+        // Silently fail - user not authenticated or server unavailable
         setUser(null);
       } finally {
         setIsLoading(false);
       }
     };
-    initAuth();
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      initAuth();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = async (email: string, password: string) => {

@@ -39,21 +39,29 @@ export interface Comment {
 }
 
 async function fetchWithCredentials(url: string, options: RequestInit = {}) {
-  const response = await fetch(`${API_BASE_URL}${url}`, {
-    ...options,
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
-    throw new Error(error.detail || 'An error occurred');
+  try {
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
+      throw new Error(error.detail || 'An error occurred');
+    }
+    
+    return response.json();
+  } catch (error) {
+    // If fetch fails (network error, CORS, etc.), throw a more descriptive error
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Unable to connect to server. Please check your connection.');
+    }
+    throw error;
   }
-  
-  return response.json();
 }
 
 // Auth APIs
