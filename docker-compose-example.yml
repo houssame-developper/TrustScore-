@@ -1,0 +1,43 @@
+services:
+  backend:
+    build: .
+    container_name: backend_app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./app:/app  # مزامنة الكود مباشرة لتفادي إعادة البناء
+    networks:
+      - app_network
+
+  db:
+    image: postgres:18.1-bookworm
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: x
+      POSTGRES_PASSWORD: xx
+      POSTGRES_DB: xxx
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U x  -d xxx"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    volumes:
+      # Postgres data dir inside the container
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  postgres_data:
