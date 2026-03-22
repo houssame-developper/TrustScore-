@@ -50,12 +50,8 @@ class AuthService:
                                         voter_service:VoterService,session:AsyncSession,response:Response):
         try:
             data = await voter_service.add_voter(register_schema,session)
-            
-            access_token = self._token_encode(data["id"],data["role"],minutes=3)
-            refresh_token = self._token_encode(data["id"],data["role"],hours=30*24*3600)
-            response.set_cookie("access_token",access_token,60*3,httponly=True)
-            response.set_cookie("refresh_token",refresh_token,30*24*3600,httponly=True)
-            return {"voter":data}
+
+            return {"message":"Register successful"}
 
         except Exception as e:
             raise e
@@ -80,7 +76,7 @@ class AuthService:
                     await session.commit()
                     
                 
-                access_token = self._token_encode(user_id,role,minutes=120)
+                access_token = self._token_encode(user_id,role,minutes=3)
                 refresh_token = self._token_encode(user_id,role,hours=30*24*3600)
                 response.set_cookie("access_token",access_token,60*120,httponly=True)
                 response.set_cookie("refresh_token",refresh_token,30*24*3600,httponly=True)
