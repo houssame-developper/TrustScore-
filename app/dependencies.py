@@ -25,7 +25,7 @@ def get_rating_statistics_service():
 def get_comment_service():
     return CommentService()  
 
-def get_current_user(access_token:str=Cookie(),auth_service:AuthService=Depends(get_auth_service)):
+def get_current_user(access_token:str=Cookie(None),auth_service:AuthService=Depends(get_auth_service)):
     if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
