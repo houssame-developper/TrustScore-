@@ -15,24 +15,21 @@ class ProfService:
         allowed_extensions = {".png", ".jpg", ".jpeg"}
         default_path = "uploads/default.png"
 
-        if not file:
+        if not file or not file.filename:
             return {"filename": default_path}
 
-        # 1. Vérification de l'extension du nom de fichier original
         _, ext = os.path.splitext(file.filename.lower())
         if ext not in allowed_extensions:
             raise HTTPException(
                 status_code=400,
-                detail=f"Extension {ext} non supportée. PNG/JPG uniquement."
+                detail=f"Unsupported file type '{ext}'. Only PNG/JPG allowed.",
             )
 
-        # 2. Nom unique
         file_name = f"{uuid4()}{ext}"
         file_path = os.path.join("uploads", file_name)
 
-        # 3. Écriture asynchrone (ne bloque pas le serveur)
         async with aiofiles.open(file_path, "wb") as out_file:
-            content = await file.read()  # Lit le contenu du fichier
+            content = await file.read()
             await out_file.write(content)
 
         return {"filename": file_path}
