@@ -16,7 +16,7 @@ class Voter(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(255), nullable=False)    
     password = Column(Text, nullable=False)  
-    public_key = Column(String(2050), nullable=False)   
+    public_key = Column(String(2050), nullable=True)   
     # 2. On passe la classe Role au type SQLEnum de SQLAlchemy
     role = Column(SQLEnum(Role),nullable=False,default=Role.VOTER)
     
