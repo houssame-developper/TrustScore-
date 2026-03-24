@@ -77,11 +77,11 @@ class AuthService:
             else:
               raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Incorrect password")                         
                 
-                access_token = self._token_encode(user_id,role,minutes=3)
-                refresh_token = self._token_encode(user_id,role,hours=30*24*3600)
-                response.set_cookie("access_token",access_token,60*120,httponly=True)
-                response.set_cookie("refresh_token",refresh_token,30*24*3600,httponly=True)
-                return {"id":user_id,
+            access_token = self._token_encode(user_id,role,minutes=3)
+            refresh_token = self._token_encode(user_id,role,hours=30*24*3600)
+            response.set_cookie("access_token",access_token,60*120,httponly=True)
+            response.set_cookie("refresh_token",refresh_token,30*24*3600,httponly=True)
+            return {"id":user_id,
                         "role":role.value,
                         "access_token":access_token
                         }  
