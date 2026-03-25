@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-pytest-asyncio 
 slowapi 
 
 passlib[bcrypt]>=1.7.4
